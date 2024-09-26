@@ -20,3 +20,11 @@ def plot_graph(stock_data, revenue_data, stock):
     # Plotting Revenue
     fig.add_trace(go.Scatter(x=pd.to_datetime(revenue_data['Date'], infer_datetime_format=True), 
                              y=revenue_data['Revenue'].astype("float"), name="Revenue"), row=2, col=1)
+    
+    # Updating axes and layout
+    fig.update_xaxes(title_text="Date", row=1, col=1)
+    fig.update_xaxes(title_text="Date", row=2, col=1)
+    fig.update_yaxes(title_text="Price ($)", row=1, col=1)
+    fig.update_yaxes(title_text="Revenue ($ Millions)", row=2, col=1)
+    fig.update_layout(showlegend=False, height=1000, title=stock, xaxis_rangeslider_visible=True)
+    fig.show()
