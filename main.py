@@ -28,3 +28,32 @@ def plot_graph(stock_data, revenue_data, stock):
     fig.update_yaxes(title_text="Revenue ($ Millions)", row=2, col=1)
     fig.update_layout(showlegend=False, height=1000, title=stock, xaxis_rangeslider_visible=True)
     fig.show()
+
+def extract_revenue_data(url, table_text):
+    """Function to extract revenue data from a given URL and table text."""
+    # Using requests to download the webpage
+    html_text = requests.get(url).text
+    soup = BeautifulSoup(html_text, 'html5lib')
+
+    # Find the table with the given text in it
+    tables = soup.find_all('table')
+    table_index = None
+
+    for index, table in enumerate(tables):
+        if table_text in str(table):
+            table_index = index
+            break
+
+    # Extract revenue data if table found
+    revenue_data = pd.DataFrame(columns=["Date", "Revenue"])
+    if table_index is not None:
+        table_body = tables[table_index].find("tbody")
+        if table_body:
+            rows = table_body.find_all("tr")
+            for row in rows:
+                cols = row.find_all("td")
+                if cols:
+                    date = cols[0].text
+                    revenue = cols[1].text.replace("$", "").replace(",", "")
+                    revenue_data = pd.concat([revenue_data, pd.DataFrame({'Date': [date], 'Revenue': [revenue]})], ignore_index=True)
+    return revenue_data
