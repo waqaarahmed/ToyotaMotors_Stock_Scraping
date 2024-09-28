@@ -57,3 +57,27 @@ def extract_revenue_data(url, table_text):
                     revenue = cols[1].text.replace("$", "").replace(",", "")
                     revenue_data = pd.concat([revenue_data, pd.DataFrame({'Date': [date], 'Revenue': [revenue]})], ignore_index=True)
     return revenue_data
+
+def show_data_in_window(title, data):
+    """Function to create a full-screen window and display the data in a scrollable text widget."""
+    window = tk.Tk()
+    window.title(title)
+    
+    # Make the window fullscreen
+    window.attributes('-fullscreen', True)
+
+    # Create a scrolled text widget that will expand to fit the full screen
+    text_area = scrolledtext.ScrolledText(window, wrap=tk.WORD)
+    text_area.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+    
+    # Insert data into the text area
+    text_area.insert(tk.END, data.to_string(index=False))
+    
+    # Disable editing
+    text_area.config(state=tk.DISABLED)
+    
+    # Add a key binding to exit fullscreen (press 'Esc' to exit)
+    window.bind('<Escape>', lambda e: window.attributes('-fullscreen', False))
+    
+    # Start the window loop
+    window.mainloop()
